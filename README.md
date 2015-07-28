@@ -1,5 +1,10 @@
 # something
-Hopefully a game at some point built with some of the other DE folks
+Hopefully a game at some point built with some of the other DE folks.
+
+## Tags and Branches
+I've tagged each chapter in the official rust book with the resulting code from
+said chapter. The master branch holds the code for each of those chapters,
+while the piston branch is the result of my learning Piston.
 
 # Rust
 Just finished the second chapter in the official Rust documentation
