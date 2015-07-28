@@ -1,36 +1,63 @@
-extern crate rand;
+use std::thread;
+use std::sync::{Mutex, Arc};
 
-use std::io;
-use std::cmp::Ordering;
-use rand::Rng;
+struct Philosopher {
+    name: String,
+    left: usize,
+    right: usize
+}
+
+impl Philosopher {
+    fn new(name: &str, left: usize, right: usize) -> Philosopher {
+        Philosopher {
+            name: name.to_string(),
+            left: left,
+            right: right
+        }
+    }
+
+    fn eat(&self, table: &Table) {
+        let _left = table.forks[self.left].lock().unwrap();
+        let _right = table.forks[self.right].lock().unwrap();
+
+        println!("{} is eating.", self.name);
+
+        thread::sleep_ms(1000);
+
+        println!("{} is done eating.", self.name);
+    }
+}
+
+struct Table {
+    forks: Vec<Mutex<()>>
+}
 
 fn main() {
-    let secret_number = rand::thread_rng().gen_range(1, 101);
+    let table = Arc::new(Table { forks: vec![
+        Mutex::new(()),
+        Mutex::new(()),
+        Mutex::new(()),
+        Mutex::new(()),
+        Mutex::new(())
+    ]});
 
-    println!("Guess the number!");
+    let philosophers = vec![
+        Philosopher::new("Baruch Spinoza", 0, 1),
+        Philosopher::new("Gilles Deleuze", 1, 2),
+        Philosopher::new("Karl Marx", 2, 3),
+        Philosopher::new("Friedrich Nietzsche", 3, 4),
+        Philosopher::new("Michel Foucault", 0, 4)
+    ];
 
-    loop {
-        println!("Please input your guess.");
-        let mut guess = String::new();
+    let handles: Vec<_> = philosophers.into_iter().map(|p| {
+        let table = table.clone();
 
-        io::stdin().read_line(&mut guess)
-            .ok()
-            .expect("Failed to read line");
+        thread::spawn(move || {
+            p.eat(&table);
+        })
+    }).collect();
 
-        let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue
-        };
-
-        println!("You guessed: {}", guess);
-
-        match guess.cmp(&secret_number) {
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
-            Ordering::Equal => {
-                println!("You win!");
-                break;
-            }
-        }
+    for h in handles {
+        h.join().unwrap();
     }
 }
