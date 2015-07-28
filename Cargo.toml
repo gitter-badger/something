@@ -1,0 +1,13 @@
+[package]
+name = "getting-started-spinning-square"
+version = "0.1.0"
+authors = [ "Edwin Marshall <emarshall85@gmail.com>" ]
+
+[[bin]]
+name = "spinnin-square"
+
+[dependencies]
+piston = "0.5.0"
+piston2d-graphics = "0.4.1"
+pistoncore-glutin_window = "0.5.0"
+piston2d-opengl_graphics = "0.6.0"
