@@ -1,12 +1,10 @@
 /* global exports */
-(function () {
-  "use strict";
+"use strict";
 
-  // module Main
+// module Main
 
-  exports.closeInterface = function (readline) {
-    return function () {
-      readline.close();
-    };
+exports.closeInterface = function (readline) {
+  return function () {
+    readline.close();
   };
-}());
+};
